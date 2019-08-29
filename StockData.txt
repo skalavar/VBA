@@ -1,0 +1,82 @@
+Sub StockData()
+    
+    ' Add a sheet named Combined Stock Data
+    Sheets.Add.Name = "Combined_Stock_Data"
+    'move created sheet to be first sheet
+    Sheets("Combined_Stock_Data").Move Before:=Sheets(1)
+    ' Specify the location of the combined sheet
+    Set combined_sheet = Worksheets("Combined_Stock_Data")
+
+    ' Loop through all sheets
+    For Each ws In Worksheets
+
+        ' Find the last row of the combined sheet
+        lastRow = combined_sheet.Cells(Rows.Count, "A").End(xlUp).Row + 1
+
+        ' Find the last row of each worksheet minus header
+        lastRowState = ws.Cells(Rows.Count, "A").End(xlUp).Row - 1
+
+        ' Copy the contents of each state sheet into the combined sheet
+        combined_sheet.Range("A" & lastRow & ":G" & ((lastRowState - 1) + lastRow)).Value = ws.Range("A2:G" & (lastRowState + 1)).Value
+
+    Next ws
+
+    ' Copy the headers from sheet 1
+    combined_sheet.Range("A1:G1").Value = Sheets(2).Range("A1:G1").Value
+    
+    ' Autofit to display data
+    combined_sheet.Columns("A:G").AutoFit
+End Sub
+
+
+-----------
+
+Sub StockData():
+    ' Declare variables
+    Dim Ticker As String
+    
+    
+    Dim Total_Stock_Volume As Double
+    Total_Stock_Volume = 0
+    
+    ' Counter for each Rowl in the summary table
+    Dim Summary_Table_Row As Integer
+    Summary_Table_Row = 2
+
+    ' Loop through all rows
+    For I = 2 To 797711
+
+        ' Check if we are still within the same
+        If Cells(I + 1, 1).Value <> Cells(I, 1).Value Then
+
+            ' Set the Ticker
+            Ticker = Cells(I, 1).Value
+            
+            ' Add to the Total Stock Volume
+            Total_Stock_Volume = Total_Stock_Volume + Cells(I, 3).Value
+            
+            ' Print the Ticker in the Summary Table
+            Range("H" & Summary_Table_Row).Value = Ticker
+            
+            ' Print the Total Stock Volume in the Summary Table
+             Range("I" & Summary_Table_Row).Value = Total_Stock_Volume
+            
+            ' Add one to the summary table row
+            Summary_Table_Row = Summary_Table_Row + 1
+                  
+            ' Reset the Total Stock Volume
+            Total_Stock_Volume = 0
+
+        
+        Else
+
+            
+            Total_Stock_Volume = Total_Stock_Volume + Cells(I, 3).Value
+
+
+        End If
+
+    Next I
+
+End Sub
+
